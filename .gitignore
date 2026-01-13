@@ -1,0 +1,10 @@
+#backend
+.venv/
+.venv2/
+.env
+
+# __pycache__ ignor
+**/__pycache__/
+
+# ignor log files
+**.log

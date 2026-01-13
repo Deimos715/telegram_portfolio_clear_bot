@@ -1,0 +1,25 @@
+# Виртуальное окружение
+.venv/
+env/
+
+# Гит
+.git/
+.gitignore
+
+# IDE/редакторы
+.vscode/
+.idea/
+
+# Логи/кэш
+__pycache__/
+*.pyc
+*.pyo
+*.log
+
+# Docker
+docker-compose.yml
+docker-compose.override.yml
+Dockerfile*
+
+# Секретные данные
+*.env

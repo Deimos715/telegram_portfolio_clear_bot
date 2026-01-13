@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Отчет по статистике</title>
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --text: #1f1f1f;
+      --muted: #6b6b6b;
+      --card: #ffffff;
+      --border: #e5e5e5;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 24px;
+      padding-left: calc(24px + env(safe-area-inset-left));
+      padding-right: calc(24px + env(safe-area-inset-right));
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Georgia", "Times New Roman", serif;
+    }
+    .wrap {
+      max-width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    header {
+      margin-bottom: 24px;
+    }
+    h1 {
+      margin: 0 0 6px 0;
+      font-size: 28px;
+    }
+    h2 {
+      margin: 24px 0 12px;
+      font-size: 20px;
+    }
+    h3 {
+      margin: 16px 0 8px;
+      font-size: 16px;
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      overflow: hidden;
+      max-width: 100%;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .metric {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fafafa;
+    }
+    .metric b {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 14px;
+      min-width: 600px;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+    }
+    th {
+      background: #f0f0f0;
+    }
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .table-wrap {
+      width: 100%;
+    }
+    a {
+      color: #1f1f1f;
+      text-decoration: none;
+      display: inline-block;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+        padding-left: calc(12px + env(safe-area-inset-left));
+        padding-right: calc(12px + env(safe-area-inset-right));
+      }
+      .card {
+        padding: 12px;
+      }
+      table {
+        font-size: 13px;
+      }
+      .table-scroll {
+        overflow: visible;
+      }
+      .data-table {
+        min-width: 0;
+      }
+      .data-table,
+      .data-table thead,
+      .data-table tbody,
+      .data-table tr,
+      .data-table td {
+        display: block;
+        width: 100%;
+      }
+      .data-table thead {
+        display: none;
+      }
+      .data-table tbody tr {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        width: 100%;
+        max-width: 100%;
+      }
+      .data-table tbody tr:last-child {
+        margin-bottom: 0;
+      }
+      .data-table td {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 6px 0;
+        border: none;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+      .data-table td::before {
+        font-weight: 600;
+        color: var(--muted);
+        flex: 0 0 44%;
+      }
+      .data-table td[colspan] {
+        display: block;
+        padding: 0;
+      }
+      .data-table td[colspan]::before {
+        content: none;
+      }
+      .data-table td > * {
+        max-width: 100%;
+        word-break: break-word;
+      }
+      .data-table td:nth-child(1)::before { content: ""; }
+      .data-table td:nth-child(2)::before { content: ""; }
+      .data-table td:nth-child(3)::before { content: ""; }
+      .data-table td:nth-child(4)::before { content: ""; }
+      .top-cases td:nth-child(1)::before { content: "Кейс"; }
+      .top-cases td:nth-child(2)::before { content: "Просмотры"; }
+      .funnel td:nth-child(1)::before { content: "Шаг"; }
+      .funnel td:nth-child(2)::before { content: "Пользователи"; }
+      .top-buttons td:nth-child(1)::before { content: "Кнопка / раздел"; }
+      .top-buttons td:nth-child(2)::before { content: "Клики"; }
+      .stuck td:nth-child(1)::before { content: "Сценарий"; }
+      .stuck td:nth-child(2)::before { content: "Пользователей"; }
+      .users td:nth-child(1)::before { content: "Имя"; }
+      .users td:nth-child(2)::before { content: "Username"; }
+      .users td:nth-child(3)::before { content: "Последняя активность"; }
+      .users td:nth-child(4)::before { content: "Контакт"; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Отчет по статистике</h1>
+      <div class="meta">Сформирован: {{generated_at}}</div>
+    </header>
+
+    <section class="card">
+      <h2>Общее</h2>
+      <div class="grid">
+        <div class="metric"><b>{{users_total}}</b>Пользователей</div>
+        <div class="metric"><b>{{cases_total}}</b>Кейсов всего</div>
+        <div class="metric"><b>{{cases_published}}</b>Кейсов опубликовано</div>
+        <div class="metric"><b>{{cases_draft}}</b>Кейсов в черновике</div>
+        <div class="metric"><b>{{cases_archived}}</b>Кейсов в архиве</div>
+        <div class="metric"><b>{{media_total}}</b>Медиа в кейсах</div>
+        <div class="metric"><b>{{events_total}}</b>Событий за 30 дней</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Кейсы</h2>
+      <h3>Топ кейсов</h3>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="data-table top-cases">
+          <thead>
+            <tr>
+              <th>Кейс</th>
+              <th>Просмотры</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{top_cases_rows}}
+          </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>События / Воронка</h2>
+      <h3>Воронка</h3>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="data-table funnel">
+          <thead>
+            <tr>
+              <th>Шаг</th>
+              <th>Уникальных пользователей</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{funnel_rows}}
+          </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Топ кнопок / разделов</h2>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="data-table top-buttons">
+          <thead>
+            <tr>
+              <th>Кнопка / раздел</th>
+              <th>Клики</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{top_buttons_rows}}
+          </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Где застревают</h2>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="data-table stuck">
+          <thead>
+            <tr>
+              <th>Сценарий</th>
+              <th>Пользователей</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{stuck_rows}}
+          </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Пользователи</h2>
+      <p class="meta">Последняя активность и контакт для связи</p>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table class="data-table users">
+          <thead>
+            <tr>
+              <th>Имя</th>
+              <th>Username</th>
+              <th>Последняя активность</th>
+              <th>Контакт</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{users_rows}}
+          </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
