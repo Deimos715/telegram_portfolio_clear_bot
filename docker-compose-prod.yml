@@ -1,19 +1,14 @@
-version: "3.9"
-
 services:
     db:
         image: postgres:17
         restart: unless-stopped
         # Берём учётные данные из .env.prod
-        env_file: .env.prod
-        environment:
-            POSTGRES_DB: ${PG_DB}
-            POSTGRES_USER: ${PG_USER}
-            POSTGRES_PASSWORD: ${PG_PASSWORD}
+        env_file:
+            - .env.prod
         volumes:
             - pg_data:/var/lib/postgresql/data
         healthcheck:
-            test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DB}"]
+            test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
             interval: 10s
             timeout: 5s
             retries: 5
@@ -30,13 +25,11 @@ services:
         container_name: exemple_bot_prod # изменить имя контейнера для другого проекта
         restart: unless-stopped
         # Используем специфичный env файл для prod
-        env_file: .env.prod
+        env_file:
+            - .env.prod
         depends_on:
             db:
                 condition: service_healthy
-        environment:
-            - PG_LINK=${PG_LINK}
-            - TZ=${TZ}
         command: ["python", "run_bot.py"]
         # В проде не монтируем локальную папку — используем собранный образ
 

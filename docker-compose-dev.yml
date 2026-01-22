@@ -1,19 +1,14 @@
-version: "3.9"
-
 services:
     db:
         image: postgres:17
         restart: unless-stopped
         # Берём учётные данные из .env.dev
-        env_file: .env.dev
-        environment:
-            POSTGRES_DB: ${PG_DB}
-            POSTGRES_USER: ${PG_USER}
-            POSTGRES_PASSWORD: ${PG_PASSWORD}
+        env_file:
+            - .env.dev
         volumes:
             - pg_data:/var/lib/postgresql/data
         healthcheck:
-            test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DB}"]
+            test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
             interval: 10s
             timeout: 5s
             retries: 5
@@ -25,17 +20,14 @@ services:
         build:
             context: .
             dockerfile: Dockerfile.dev
-        container_name: example_bot_dev # изменить имя контейнера для другого проекта
+        container_name: portfolio_bot_dev # изменить имя контейнера для другого проекта
         restart: unless-stopped
         # Используем специфичный env файл для dev
-        env_file: .env.dev
+        env_file:
+            - .env.dev
         depends_on:
             db:
                 condition: service_healthy
-        # Прокидываем правильный PG_LINK внутрь контейнера
-        environment:
-            - PG_LINK=${PG_LINK}
-            - TZ=${TZ}
         command: ["python", "run_bot.py"]
 
 volumes:
