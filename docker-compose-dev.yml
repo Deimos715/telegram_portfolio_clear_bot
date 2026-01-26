@@ -12,9 +12,11 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
-        ports:
+        # ports:
             # опционально: чтобы подключаться с хоста psql-клиентом
-            - "5432:5432" # наружный порт/внутренний порт, 5432 по умолчанию для Postgres
+            # - "5432:5432" # наружный порт/внутренний порт, 5432 по умолчанию для Postgres
+        mem_limit: 384m
+        memswap_limit: 384m
 
     bot:
         build:
@@ -29,6 +31,8 @@ services:
             db:
                 condition: service_healthy
         command: ["python", "run_bot.py"]
+        mem_limit: 384m
+        memswap_limit: 384m
 
 volumes:
     pg_data:

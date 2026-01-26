@@ -12,8 +12,10 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
-        ports:
-            - "5432:5432" # наружный порт/внутренний порт, 5432 по умолчанию для Postgres
+        # ports:
+            # - "5432:5432" # наружный порт/внутренний порт, 5432 по умолчанию для Postgres
+        mem_limit: 384m
+        memswap_limit: 384m
 
     bot:
         image: ghcr.io/<user>/<name_repository>:latest # изменить образ для другого проекта
@@ -31,6 +33,8 @@ services:
             db:
                 condition: service_healthy
         command: ["python", "run_bot.py"]
+        mem_limit: 384m
+        memswap_limit: 384m
         # В проде не монтируем локальную папку — используем собранный образ
 
 volumes:
