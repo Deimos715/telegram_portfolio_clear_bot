@@ -22,7 +22,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile.dev
-        container_name: portfolio_bot_dev # изменить имя контейнера для другого проекта
+        container_name: exemple_bot_dev # изменить имя контейнера для другого проекта
         restart: unless-stopped
         # Используем специфичный env файл для dev
         env_file:
