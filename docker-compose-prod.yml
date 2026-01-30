@@ -18,13 +18,13 @@ services:
         memswap_limit: 384m
 
     bot:
-        image: ghcr.io/<user>/<name_repository>:latest # изменить образ для другого проекта
+        image: ghcr.io/deimos715/asteys_portfolio_bot:latest # изменить образ для другого проекта
         # пример заполнения ghcr.io/glom-ruvicon/portfolio_bot:latest
         # ghcr.io — GitHub Container Registry (регистри образов);
         # glom-ruvicon — owner (user/org) на GitHub;
         # portfolio_bot — имя репозитория/образа;
         # latest — тег
-        container_name: exemple_bot_prod # изменить имя контейнера для другого проекта
+        container_name: portfolio_bot_prod # изменить имя контейнера для другого проекта
         restart: unless-stopped
         # Используем специфичный env файл для prod
         env_file:

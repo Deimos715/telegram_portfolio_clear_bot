@@ -14,6 +14,32 @@ from handlers.services.statistics_files_service import cleanup_statistics_report
 import asyncio
 import logging
 import time
+import html
+
+
+async def safe_answer_html(message_obj: Message, text: str, reply_markup=None, **kwargs):
+    """
+    Отправляет текст как HTML.
+    Если HTML сломан (can't parse entities) — отправляет fallback plain text,
+    но С ТОЙ ЖЕ inline-клавиатурой, чтобы меню не пропадало.
+    """
+    try:
+        return await message_obj.answer(
+            text,
+            parse_mode="HTML",
+            reply_markup=reply_markup,
+            **kwargs,
+        )
+    except TelegramBadRequest as e:
+        if "can't parse entities" in str(e):
+            safe_text = html.escape(text)
+            return await message_obj.answer(
+                safe_text,
+                parse_mode=None,
+                reply_markup=reply_markup,
+                **kwargs,
+            )
+        raise
 
 admin_router = Router()
 PAGE_SIZE = 8
@@ -85,14 +111,18 @@ async def render_case_editor(message_obj, state: FSMContext, case_id: int, back_
 
     # 2) панель управления отдельным сообщением
     # админ | редактор кейса | показать панель управления кейсом
-    card_msg = await message_obj.answer(
-        caption,
-        reply_markup=admin_case_editor_kb(
-            case_id=case["case_id"],
-            status=case["status"],
-            back_page=back_page
-        )
+    kb = admin_case_editor_kb(
+        case_id=case["case_id"],
+        status=case["status"],
+        back_page=back_page
     )
+
+    card_msg = await safe_answer_html(
+        message_obj,
+        caption,
+        reply_markup=kb
+    )
+
     await state.update_data(case_editor_card_message_id=card_msg.message_id)
 
 
